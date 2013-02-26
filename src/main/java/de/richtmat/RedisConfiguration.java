@@ -8,19 +8,39 @@ import org.apache.commons.configuration.Configuration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+
+/**
+ *	A persistent configuration using the Redis NoSQL key-value store.
+ *
+ */
 public class RedisConfiguration extends AbstractConfiguration implements
 		Configuration {
 
 	private Jedis client;
 
+	/**
+	 * Builds a configuration from a Redis store running on standard localhost:6739 with a timeout of 2000ms.
+	 */
 	public RedisConfiguration() {
 		this.client = new Jedis("localhost");
 	}
-	
+
+	/**
+	 * Builds a configuration from a Redis store running on:
+	 *  
+	 * @param host			the hostname Redis is running on
+	 * @param port			the port Redis can be found at
+	 * @param timeout		connection timeout value
+	 */
 	public RedisConfiguration(String host, int port, int timeout) {
 		this.client = new Jedis(host, port, timeout);
 	}
 
+	/**
+	 * Builds a configuration from a Redis store using a JedisPool:
+	 *  
+	 * @param pool			JedisPool
+	 */	
 	public RedisConfiguration(JedisPool pool) {
 		this.client = pool.getResource();
 	}
