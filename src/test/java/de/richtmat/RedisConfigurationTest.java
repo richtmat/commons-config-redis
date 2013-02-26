@@ -1,41 +1,23 @@
 package de.richtmat;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 
 import org.apache.commons.configuration.Configuration;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import redis.clients.jedis.Jedis;
-
-import uk.co.datumedge.redislauncher.LocalRedisServer;
-import uk.co.datumedge.redislauncher.RedisServer;
+import redis.clients.jedis.JedisPool;
 
 public class RedisConfigurationTest {
 
-	Configuration config = new RedisConfiguration();
-	static RedisServer redisServer;
-	
-	static {
-		System.setProperty("redislauncher.command", "/usr/local/bin/redis-server");
-	}
-	
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		redisServer = LocalRedisServer.newInstance();
-		redisServer.start();
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		redisServer.stop();
-	}
+	private Configuration config = new RedisConfiguration();
 	
 	@Before
 	public void setUp() {
@@ -50,6 +32,20 @@ public class RedisConfigurationTest {
 	public void tearDown() {
 		Jedis jedis = new Jedis("localhost");
 		jedis.flushAll();
+	}
+	
+	@Test
+	public void testRedisConfig() {
+		config = new RedisConfiguration("localhost", 6379, 5000);
+		assertNotNull(config);
+		assertTrue(config.containsKey("key"));
+	}
+	
+	@Test
+	public void testRedisConfigPooled() {
+		config = new RedisConfiguration(new JedisPool("localhost", 6379));
+		assertNotNull(config);
+		assertTrue(config.containsKey("key"));
 	}
 
 	@Test

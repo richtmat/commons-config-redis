@@ -6,6 +6,7 @@ import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.Configuration;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 public class RedisConfiguration extends AbstractConfiguration implements
 		Configuration {
@@ -14,6 +15,14 @@ public class RedisConfiguration extends AbstractConfiguration implements
 
 	public RedisConfiguration() {
 		this.client = new Jedis("localhost");
+	}
+	
+	public RedisConfiguration(String host, int port, int timeout) {
+		this.client = new Jedis(host, port, timeout);
+	}
+
+	public RedisConfiguration(JedisPool pool) {
+		this.client = pool.getResource();
 	}
 	
 	public boolean containsKey(String key) {
